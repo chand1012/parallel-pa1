@@ -28,6 +28,14 @@ run-c:
 
 c: run-c clean
 
+build-test:
+    mpicc -o test test.c
+
+run-test:
+    if [ -f test ]; then ./test; else just build-test; ./test; fi
+
+test: run-test clean
+
 # check if mpi is install by making sure mpicc is in the path
 @doctor:
     if [ -z $(which mpicc) ]; then echo "mpicc not found in path"; else echo "mpicc good"; fi
