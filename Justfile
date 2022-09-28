@@ -3,6 +3,7 @@ PROCESSES := env_var_or_default("PROCESSES", "2")
 
 clean:
     rm -f a b c test
+    rm -rf PA1
 
 build-a:
     mpicc -o a pa1a.c
@@ -38,11 +39,17 @@ test: run-test clean
 
 # check if mpi is install by making sure mpicc is in the path
 @doctor:
-    if [ -z $(which mpicc) ]; then echo "mpicc not found in path"; else echo "mpicc good"; fi
-    if [ -z $(which mpirun) ]; then echo "mpirun not found in path"; else echo "mpirun good"; fi
+    if [ -z $(which mpicc) ]; then echo "mpicc not found in path"; exit 1; else echo "mpicc good"; fi
+    if [ -z $(which mpirun) ]; then echo "mpirun not found in path"; exit 1; else echo "mpirun good"; fi
 
+zip:
+    mkdir -p PA1
+    cp pa1a.c pa1b.c pa1c.c PA1
+    cp performance.txt PA1
+    zip -r PA1.zip PA1
+    
 build: build-a build-b build-c
 
 run: run-a run-b run-c
 
-default: build run clean
+default: doctor build run zip clean
